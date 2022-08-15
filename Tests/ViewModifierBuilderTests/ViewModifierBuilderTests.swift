@@ -37,7 +37,9 @@ struct ContentView: View {
         VStack {
             Text("Hello, world!").modifiers {
                 Green()
-                Rounded()
+                if (true){
+                    Rounded()
+                }
                 HelloWorld()
             }
             Text("Hello, world!").modifiers { HelloWorld() }

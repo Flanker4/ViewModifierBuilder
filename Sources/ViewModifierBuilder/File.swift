@@ -37,8 +37,6 @@ struct ContentView: View {
                 Green()
                 if (isEnabled){
                     Rounded()
-                } else {
-                    Rounded()
                 }
                 HelloWorld()
             }

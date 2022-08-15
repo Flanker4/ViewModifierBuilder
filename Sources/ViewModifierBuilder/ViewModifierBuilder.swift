@@ -23,22 +23,27 @@ public typealias Style = ViewModifier
         return s1.concat(s2).concat(s3).concat(s4).concat(s5)
     }
     
-    public static func buildEither<S1>(first: S1) -> ModifiedContent<S1, EmptyModifier> where S1: ViewModifier {
-        return first.concat(EmptyModifier())
+    static func buildOptional<S1>(_ s1: S1?) -> ConditionalViewModifier<S1> where S1: ViewModifier {
+        return ConditionalViewModifier(condition: s1 != nil, modifier: s1)
     }
+}
+
+
+struct ConditionalViewModifier<S: ViewModifier>: Style {
+    let condition: Bool
+    let modifier: S?
     
-    public static func buildEither<S1>(second: S1) -> ModifiedContent<S1, EmptyModifier> where S1: ViewModifier {
-        return second.concat(EmptyModifier())
+    func body(content: Content) -> some View {
+        if (condition) {
+            content.modifier(modifier!)
+        } else {
+            content.modifier(EmptyModifier())
+        }
     }
-//    static func buildOptional<S1, S3>(_ s1: S1?) -> ModifiedContent<EmptyModifier, S3> where S1: ViewModifier, S3: ViewModifier {
-//        guard let s1 = s1 else {
-//            return EmptyModifier().concat(EmptyModifier())
-//        }
-//        return EmptyModifier().concat(s1)
-//    }
 }
 
 public typealias StyleBuilder = ViewModifierBuilder
+
 
 
 extension View {
@@ -46,6 +51,6 @@ extension View {
         @ViewModifierBuilder _ modifiers: () -> ModifiedContent<S1, S2>
     ) -> some View {
         let result = modifiers()
-        return self.modifier(result)
+        return self.modifier(result )
     }
 }
